@@ -20,21 +20,15 @@ DAG:
     tasks:
         start_point:
             operator: !!python/name:airflow.operators.dummy_operator.DummyOperator
-        say_hello_airflow:
+        ingest_data_from_db:
             operator: !!python/name:airflow.operators.bash_operator.BashOperator
             args:
-              bash_command: "echo {{local_ds_nodash}}"
+              bash_command: "python {{ingest_data}}"
             upstream:
               - start_point
-        check_date:
+        transform_data:
             operator: !!python/name:airflow.operators.bash_operator.BashOperator
             args:
-              bash_command: "echo {{check_date}}"
+              bash_command: "python {{transform_data}}"
             upstream:
-              - start_point
-        checking:
-            operator: !!python/name:airflow.operators.bash_operator.BashOperator
-            args:
-              bash_command: "python {{checking}}"
-            upstream:
-              - start_point
+              - ingest_data_from_db

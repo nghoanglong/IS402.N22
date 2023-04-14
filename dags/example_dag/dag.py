@@ -22,7 +22,8 @@ with open(os.path.join(current_path, 'config.yaml'), 'r') as infile:
 
 
 value = {
-    'checking': os.path.join(current_path, "processing", "process_data.py"),
+    'ingest_data': os.path.join(current_path, "processing", "ingest_data.py"),
+    'transform_data': os.path.join(current_path, "processing", "transform_data.py"),
     "local_ds_nodash": "{{macros.hmd_plugins.local_ds_nodash(ts)}}",
     'check_date': "{{data_interval_start.to_date_string()}}"
 }
