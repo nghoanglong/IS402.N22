@@ -1,0 +1,7 @@
+pandas==1.5.3
+apache-airflow-providers-mysql
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+google-auth
+oauth2client

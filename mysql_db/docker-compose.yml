@@ -1,0 +1,23 @@
+version: '3'
+services:
+  mysql_db:
+    container_name: databasewarehouse
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - ./mysql_db:/var/lib/mysql
+
+    environment:
+      MYSQL_ROOT_PASSWORD: 17122000
+      MYSQL_DATABASE: dwh
+      MYSQL_USER: db
+      MYSQL_PASSWORD: 123456
+    ports:
+      - "33066:3306"
+    expose:
+      - 3306
+   
+volumes:
+  mysql_db:

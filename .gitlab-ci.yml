@@ -1,0 +1,50 @@
+image: docker
+
+services:
+  - docker:dind
+
+stages:
+  - testing
+
+testing-dags:
+  stage: testing
+  image:
+    name: apache/airflow:2.5.1-python3:8
+    entrypoint: [""]
+  before_script:
+    - pwd
+    - export AIRFLOW_HOME=~/airflow
+    - wget --no-check-certificate https://www.sqlite.org/2021/sqlite-autoconf-3340100.tar.gz
+    - tar xvf sqlite-autoconf-3340100.tar.gz
+    - cd sqlite-autoconf-3340100
+    - ./configure
+    - make
+    - sudo make install
+    - ls /usr/local/lib
+    - export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+    - cd /home/gitlab-runner/builds/acvwjy7W/0/hmdbi/hmd-data-pipeline
+  script:
+    - ls
+    - pip install --upgrade pip
+    - pip install --no-cache-dir --user -r requirements.txt
+    - rm -rf ${AIRFLOW_HOME}/dags
+    - rm -rf ${AIRFLOW_HOME}/plugins
+    - rm -f ${AIRFLOW_HOME}/airflow.cfg
+    - cp -r ./dags ${AIRFLOW_HOME}
+    - cp -r ./plugins ${AIRFLOW_HOME}
+    - cp ./airflow.cfg ${AIRFLOW_HOME}
+    - airflow db init
+    - airflow standalone &> airflow.log 2>&1 &
+    - airflow dags report -v > report.log
+    - cat report.log
+    - |
+      if grep -Fwq "ERROR" report.log
+      then
+        echo "Error detected!"
+        exit 1
+      fi
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "dev"
+      changes:
+        - dags/**/*
+        - plugins/**/*
