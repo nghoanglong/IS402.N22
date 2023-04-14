@@ -13,9 +13,9 @@ x-airflow-common:
         AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
         AIRFLOW__WEBSERVER__EXPOSE_CONFIG: 'True'
         _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
-        AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/git-sync/root/repo/dags
-        AIRFLOW__CORE__PLUGINS_FOLDER: /opt/airflow/git-sync/root/repo/plugins
-        AIRFLOW__LOGGING__BASE_LOG_FOLDER: /opt/airflow/git-sync/root/repo/logs
+        AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+        AIRFLOW__CORE__PLUGINS_FOLDER: /opt/airflow/plugins
+        AIRFLOW__LOGGING__BASE_LOG_FOLDER: /opt/airflow/logs
         AIRFLOW__WEBSERVER__RELOAD_ON_PLUGIN_CHANGE: 'True'
         AIRFLOW__CORE__LAZY_LOAD_PLUGINS: 'False'
         AIRFLOW__SMTP__SMTP_HOST: 'smtp.gmail.com'
@@ -28,7 +28,9 @@ x-airflow-common:
         AIRFLOW__WEBSERVER__BASE_URL: 'http://localhost:8089'
         AIRFLOW__WEBSERVER__WEB_SERVER_PORT: '8089'
     volumes:
-        - git-sync:/opt/airflow/git-sync # Mount DAGs folder from git-sync
+        - ./dags:/opt/airflow/dags # Mount DAGs folder from git-sync
+        - ./plugins:/opt/airflow/plugins
+        - ./logs:/opt/airflow/logs
     user: "${AIRFLOW_UID:-50000}:0"
 
 services:
