@@ -63,7 +63,6 @@ services:
         restart: always
         depends_on:
             - postgres
-            - airflow-gitsync
 
     scheduler:
         <<: *airflow-common
@@ -78,7 +77,6 @@ services:
         restart: always
         depends_on:
             - postgres
-            - airflow-gitsync
     
     # airflow-gitsync:
     #     container_name: airflow-gitsync
